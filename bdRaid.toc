@@ -1,0 +1,16 @@
+## Interface: 72000
+## Title: |cffA02C2Fbd|rRaid
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## Notes: A raid timer addon thats focused towards automation and cutting edge progression.
+## Author: Blooblahguy
+
+lib\LibStub.lua
+lib\CallbackHandler-1.0.lua
+lib\LibSharedMedia-3.0.lua
+
+core.lua
+functions.lua
+loading.lua
+
+modules/tos.lua
