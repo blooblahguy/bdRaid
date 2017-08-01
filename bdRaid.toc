@@ -2,15 +2,15 @@
 ## Title: |cffA02C2Fbd|rRaid
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
-## Notes: A raid timer addon thats focused towards automation and cutting edge progression.
+## Notes: Raid timers and utilties addon thats focused towards automation and cutting edge progression.
 ## Author: Blooblahguy
 
 lib\LibStub.lua
 lib\CallbackHandler-1.0.lua
 lib\LibSharedMedia-3.0.lua
 
-core.lua
+init.lua
 functions.lua
-loading.lua
+core.lua
 
-modules/tos.lua
+modules/kj.lua
