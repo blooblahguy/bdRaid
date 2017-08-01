@@ -13,4 +13,5 @@ init.lua
 functions.lua
 core.lua
 
+modules/maiden.lua
 modules/kj.lua
