@@ -2,14 +2,35 @@ local bdr, c, f = select(2, ...):unpack()
 
 local fight = bdr:NewFight(2051, "Kil'Jaeden")
 
+fight.timings = {}
+fight.timings['1'] = {
+	['8'] = 'Soaks then reflections',
+	['8'] = 'Soaks then reflections',
+}
+fight.timings['1.5'] = {
+
+}
+fight.timings['2'] = {
+
+}
+fight.timings['2.5'] = {
+
+}
+fight.timings['3'] = {
+
+}
+
+fight:Module_AlertText(fight.timings)
+
 fight:OnStart(function()
 	fight.phase = '1';
+	fight:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end)
 fight:OnEnd(function()
 	fight.phase = '0';
+	fight:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 end)
 
-fight:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 fight:SetScript("OnEvent",function(self,event,...)
 	if (event == "COMBAT_LOG_EVENT_UNFILTERED") then
 		timeStamp, subevent, hideCaster, sourceGUID, sourceName, 
