@@ -32,7 +32,7 @@ cont:SetScript('OnEvent', function(self, event, ...)
 			fight.name = encounterName
 			fight.difficulty = difficultyID
 			
-			ticker:SetScript("OnUpdate" ticker_OnUpdate)
+			ticker:SetScript("OnUpdate", ticker_OnUpdate)
 		end
 	elseif (event == "ENCOUNTER_END") then
 		local encounterID, encounterName, difficultyID
@@ -40,13 +40,13 @@ cont:SetScript('OnEvent', function(self, event, ...)
 		
 			bdr:triggerEvent("fightEnd_"..encounterID, difficultyID)
 			
-			ticker:SetScript("OnUpdate" function() return end)
+			ticker:SetScript("OnUpdate", function() return end)
 		end
 	end
 end)
 
 function bdr:NewFight(ID, name)
-	local fight = bdr.fights[ID] = {}
+	local fight = CreateFrame("frame", nil, UIParent)
 	fight.name = name
 	fight.active = false
 	fight.phase = "0"
@@ -142,12 +142,13 @@ bdr:hookEvent("updateSpec", function(name, specID)
 	
 	-- add to new role
 	bdr.roles[role][name] = true
-end
+end)
 
 bdr:RegisterEvent("CHAT_MSG_ADDON")
 bdr:SetScript("OnEvent", function(self, event, prefix, message, channel, sender)
 	if (event == "CHAT_MSG_ADDON" and prefix == bdr.prefix) then
-		local params = strsplit("><", message)
+	
+		local params = {strsplit("><", message)}
 		local action = params[0] or message;
 		
 		-- the numbers were made strings by the chat_msg_addon, lets find our numbers and convert them tonumbers
@@ -161,6 +162,9 @@ bdr:SetScript("OnEvent", function(self, event, prefix, message, channel, sender)
 			end
 		end
 		
-		bdr:triggerEvent(action, unpack(params))
+		params = unpack(params) or params;
+		print(params)
+		
+		bdr:triggerEvent(action, params)
 	end
 end)

@@ -24,4 +24,6 @@ bdr.font:SetShadowOffset(1, -1)
 bdr.prefix = "bdRaid"
 bdr.fights = {}
 
+bdr.font = "Interface\\Addons\\bdRaid\\media\\roboto.ttf",
+
 RegisterAddonMessagePrefix(bdr.prefix)

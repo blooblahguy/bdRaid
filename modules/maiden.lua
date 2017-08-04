@@ -17,11 +17,13 @@ end)
 display:SetScript("OnDragStop", display.StopMovingOrSizing)
 
 display.text = display:CreateFontString(nil)
-dispaly.text:SetFont(bdr.font, 16, "OUTLINE")
-dispaly.text:SetAllPoints(display)
-dispaly.text:SetJustifyH("CENTER")
-dispaly.text:SetJustifyY("CENTER")
-display.SetText = display.text.SetText
+display.text:SetFont(bdr.font, 16, "OUTLINE")
+display.text:SetAllPoints(display)
+display.text:SetJustifyH("CENTER")
+function display:SetText(text) 
+	display.text:SetText(text)
+end
+
 
 display:SetText("|cffE5EC00Holy|r or |cff3AD10DFel|r: Left Back #1-5")
 display:Hide()

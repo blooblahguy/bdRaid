@@ -12,7 +12,7 @@ function bdr:sendAction(action, ...)
 		send = "WHISPER"
 	end
 	
-	SendAddonMessage(bdlc.message_prefix, action.."><"..paramString, bdlc.sendTo, UnitName("player"));
+	SendAddonMessage(bdr.prefix, action..paramString, bdlc.sendTo, UnitName("player"));
 end
 
 -- custom events/triggers
