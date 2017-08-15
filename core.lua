@@ -7,16 +7,85 @@ cont.currentFight = nil
 
 cont.timers = {}
 
+
+-- FRAMES
+do -- text alert frame
+	local frame = CreateFrame("frame", "bdRaid Alert Text", UIParent)
+	frame:SetSize(400,200)
+	frame:SetPoint("CENTER", UIParent, "CENTER", 0 -200)
+	frame:SetUserPlaced(true)
+	frame:SetMovable(true)
+	frame:RegisterForDrag("LeftButton")
+	frame:SetScript("OnDragStart", function() if (IsShiftKeyDown()) then frame.StartMoving() end)
+	frame:SetScript("OnDragStop", frame.StopMovingOrSizing() )
+	
+	frame.text = frame:CreateFontString(nil)
+	frame.text:SetFont(bdr.font, 16, "OUTLINE")
+	frame.text:SetTextColor(1,1,1)
+	frame.text:SetAllPoints(frame)
+	frame.text:SetJustifyH("CENTER")
+	frame.text:SetJustifyV("MIDDLE")
+	
+	function frame:SetText(text)
+		frame.text:SetText(text)
+	end
+
+	cont.alertTextFrame = frame
+end
+
+do -- timer tracker (with phases)
+	local frame = CreateFrame("frame", "bdRaid Fight Timers", UIParent)
+	frame:SetSize(100, 300)
+	frame.text = frame:CreateFontString(nil)
+	frame.text:SetFont(bdr.font, 16, "OUTLINE")
+	frame.text:SetTextColor(1,1,1)
+	frame.text:SetAllPoints(frame)
+	frame.text:SetJustifyH("CENTER")
+	frame.text:SetJustifyV("MIDDLE")
+	
+	function frame:SetText(text)
+		frame.text:SetText(text)
+	end
+	
+	cont.bossClock = frame
+end
+
+-- TIMER UPDATE FUNCTION
 cont:RegisterEvent("ENCOUNTER_START")
 cont:RegisterEvent("ENCOUNTER_END")
 local total = 0;
 function ticker_OnUpdate(self, elapsed)
 	local fight = cont.currentFight
+	
 	total = total + elapsed
 	if (total >= .1 and fight) then
 		timers[fight.phase] = timers[fight.phase] or 0
 		timers[fight.phase] = timers[fight.phase] + .1
 		timers['total'] = timers['total'] + .1
+		
+		-- for the alert stuff
+		if (fight.alertTimings and fight.alertTimings[phase]) then
+			local second = math.floor(timers[fight.phase])
+			local timings = fight.alertTimings[phase]
+			
+			if (timings[second]) then
+				fight.alertTimingsLast = timings[second]
+				if (string.len(timings[second]) > 0) then
+					PlaySound("TellMessage", "Master")
+				end
+			end
+			
+			fight.alertTimingsText = fight.alertTimingsLast
+			
+			cont.alertTextFrame:SetText(fight.alertTimingsText)
+		end
+		
+		-- update fight timers
+		local bossClockText = "";
+		for phase, timer in pairs(timers) do
+			bossClockText = bossClockText..phase..": "..timer.."\n";
+		end
+		cont.bossClock:SetText(bossClockText)
 		
 		total = 0;
 	end
@@ -31,13 +100,15 @@ cont:SetScript('OnEvent', function(self, event, ...)
 			local fight = bdr.fights[encounterID]
 			fight.name = encounterName
 			fight.difficulty = difficultyID
+			fight.alertTimingsLast = "":
 			
 			ticker:SetScript("OnUpdate", ticker_OnUpdate)
 		end
 	elseif (event == "ENCOUNTER_END") then
 		local encounterID, encounterName, difficultyID
 		if (bdr.fights[encounterID]) then
-		
+			fight.alertTimingsLast = "":
+			
 			bdr:triggerEvent("fightEnd_"..encounterID, difficultyID)
 			
 			ticker:SetScript("OnUpdate", function() return end)
@@ -65,7 +136,13 @@ function bdr:NewFight(ID, name)
 	function fight:OnBossMessage(contains, func)
 		bdr:onBossMessage(contains, func)
 	end
+
+	-- Text Alert Module
+	function fight:Module_AlertText(timings)
+		fight.alertTimings = timings
+	end
 	
+	bdr.fights[ID] = fight
 	return fight
 end
 
