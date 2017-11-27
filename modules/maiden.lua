@@ -24,7 +24,6 @@ function display:SetText(text)
 	display.text:SetText(text)
 end
 
-
 display:SetText("|cffE5EC00Holy|r or |cff3AD10DFel|r: Left Back #1-5")
 display:Hide()
 
@@ -47,6 +46,7 @@ end)
 fight:OnEnd(function()
 	fight.phase = '0';
 	fight:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    print("Fight ended with assignment:", fight.display.text:GetText())
 	fight.display:Hide()
 end)
 
@@ -235,51 +235,47 @@ function fight:AssignMarks()
     end
 	
 	-- debug info
-	if (UnitIsGroupLeader('player')) then
-        SendChatMessage("Operate WA", "RAID")
-		
-        local text = {};
-        for pos, name in pairs(assigns.left.fel) do
-            text[pos] = text[pos] or ""
-            text[pos] = text[pos]..name..", "
+    local text = {};
+    for pos, name in pairs(assigns.left.fel) do
+        text[pos] = text[pos] or ""
+        text[pos] = text[pos]..name..", "
+    end
+    for i = 1, 5, 2 do 
+        if (text[i]) then
+            print("|cff3AD10DFel|r Melee #"..i..": "..text[i]); 
         end
-        for i = 1, 5, 2 do 
-            if (text[i]) then
-                print("|cff3AD10DFel|r Melee #"..i..": "..text[i]); 
-            end
+    end
+    
+    local text = {};
+    for pos, name in pairs(assigns.left.holy) do
+        text[pos] = text[pos] or ""
+        text[pos] = text[pos]..name..", "
+    end
+    for i = 1, 5, 2 do 
+        if (text[i]) then
+            print("|cffE5EC00Holy|r Ranged #"..i..": "..text[i]); 
         end
-        
-        local text = {};
-        for pos, name in pairs(assigns.left.holy) do
-            text[pos] = text[pos] or ""
-            text[pos] = text[pos]..name..", "
+    end
+    
+    local text = {};
+    for pos, name in pairs(assigns.right.holy) do
+        text[pos] = text[pos] or ""
+        text[pos] = text[pos]..name..", "
+    end
+    for i = 1, 5, 2 do 
+        if (text[i]) then
+            print("|cffE5EC00Holy|r Melee #"..i..": "..text[i]); 
         end
-        for i = 1, 5, 2 do 
-            if (text[i]) then
-                print("|cffE5EC00Holy|r Ranged #"..i..": "..text[i]); 
-            end
-        end
-        
-        local text = {};
-        for pos, name in pairs(assigns.right.holy) do
-            text[pos] = text[pos] or ""
-            text[pos] = text[pos]..name..", "
-        end
-        for i = 1, 5, 2 do 
-            if (text[i]) then
-                print("|cffE5EC00Holy|r Melee #"..i..": "..text[i]); 
-            end
-        end
-        
-        local text = {};
-        for pos, name in pairs(assigns.right.fel) do
-            text[pos] = text[pos] or ""
-            text[pos] = text[pos]..name..", "
-        end
-        for i = 1, 5, 2 do 
-            if (text[i]) then
-                print("|cff3AD10DFel|r Ranged #"..i..": "..text[i]); 
-            end
+    end
+    
+    local text = {};
+    for pos, name in pairs(assigns.right.fel) do
+        text[pos] = text[pos] or ""
+        text[pos] = text[pos]..name..", "
+    end
+    for i = 1, 5, 2 do 
+        if (text[i]) then
+            print("|cff3AD10DFel|r Ranged #"..i..": "..text[i]); 
         end
     end
 	

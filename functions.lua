@@ -1,6 +1,7 @@
 local bdr, c, f = select(2, ...):unpack()
 
 function bdr:sendAction(action, ...)
+
 	local parameters = {...}
 	local paramString = ""
 	for k, v in pairs(parameters) do
@@ -11,8 +12,10 @@ function bdr:sendAction(action, ...)
 	if (not IsInRaid()) then
 		send = "WHISPER"
 	end
+
+    print("got action", action, paramString)
 	
-	SendAddonMessage(bdr.prefix, action..paramString, bdlc.sendTo, UnitName("player"));
+	SendAddonMessage(bdr.prefix, action..paramString, "RAID", UnitName("player"));
 end
 
 -- custom events/triggers
@@ -80,27 +83,60 @@ function bdr:addIconToFrame(parentFrame, spellID, duration)
 	C_Timer.After(duration, function() frame:Hide() end)
 end
 
-function bdr:addToRaidFrame(target, spellID, duration)
+bdr.soloableClasses = {}
+bdr.soloableAbilities = {}
+function bdr:resetVars()  
+    bdr.soloableClasses = {}   
+    soloableClasses["Paladin"] = true
+    soloableClasses["Mage"] = true
+    soloableClasses["Hunter"] = true
+    soloableClasses["Rogue"] = true
+
+    bdr.soloableAbilities = {}
+    bdr.soloableAbilities["Aspect of the Turtle"] = true
+    bdr.soloableAbilities["Ice Block"] = true
+    bdr.soloableAbilities["Divine Shield"] = true
+    bdr.soloableAbilities["Cloak of Shadows"] = true
+end
+
+function bdr:iCanSolo()
+    -- we check for < 3 seconds because most mechanics have a longer duration
+    local class = UnitClass("player")
+
+    local hasCD = false
+    local cds = bdr.soloableAbilities
+
+    for k, v in pairs(cds) do
+        if (GetSpellCooldown(k)) and select(1, GetSpellCooldown(k)) < 3) then
+            hasCd = true
+        end
+    end
+
+    return hasCD
+end
+
+function bdr:modifyRaidFrame(callback)
+	local hasVuhDo = IsAddOnLoaded("VuhDo")
+	local hasbdGrid = IsAddOnLoaded("bdGrid")
 	local hasGrid2 = IsAddOnLoaded("Grid2")
     local hasElvUI = _G["ElvUF_Raid"] and _G["ElvUF_Raid"]:IsVisible()
-    local hasbdGrid = IsAddOnLoaded("bdGrid")
     
     if hasElvUI then
         for i=1, 8 do
             for j=1, 5 do
                 local f = _G["ElvUF_RaidGroup"..i.."UnitButton"..j]
-                if f and f.unit and UnitName(f.unit) == target then
-                    aura_env.addIcon(f)
-                    return
+                if f and f.unit then
+                    callback(f)
                 end
             end
         end
+    elseif hasVuhDo then
+        
     elseif hasbdGrid then
 		for i=1, 40 do
             local f = _G["oUF_bdGridUnitButton"..i]
-            if f and f.unit and UnitName(f.unit) == target then
-                aura_env.addIcon(f)
-                return
+            if f and f.unit then
+                callback(f)
             end
         end
     elseif hasGrid2 then
@@ -112,9 +148,8 @@ function bdr:addToRaidFrame(target, spellID, duration)
                 if child:IsVisible() then
                     local frames = {child:GetChildren()}
                     for _, f in ipairs(frames) do
-                        if f.unit and UnitName(f.unit) == target then
-                            aura_env.addIcon(f)
-                            return
+                        if f.unit then
+                            callback(f)
                         end
                     end
                 end

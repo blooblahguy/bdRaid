@@ -15,3 +15,4 @@ core.lua
 
 modules/maiden.lua
 modules/kj.lua
+modules/atb.lua

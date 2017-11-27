@@ -131,6 +131,7 @@ function bdr:NewFight(ID, name)
 	function fight:OnEnd(func)
 		cont.currentFight = nil
 		fight.active = false
+		bdr:resetVars()
 		bdr:hookEvent("fightEnd_"..ID, func)
 	end
 	function fight:OnBossMessage(contains, func)
