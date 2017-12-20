@@ -35,3 +35,11 @@ local fight = bdr:NewFight(2063, "Aggramar")
 
 -- argus
 local fight = bdr:NewFight(2092, "Argus the Unmaker")
+fight:OnStart(function()
+	fight.phase = '1';
+	fight:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+end)
+fight:OnEnd(function()
+	fight.phase = '0';
+	fight:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+end)
