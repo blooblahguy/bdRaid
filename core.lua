@@ -7,6 +7,31 @@ cont.currentFight = nil
 
 cont.timers = {}
 
+--[[
+	function()
+    if aura_env.EStart then       
+        local charges, _, started, duration = GetSpellCharges(20484)
+        local time = "0:00"
+        if started then
+            local timer = duration - (GetTime() - started)
+            time = ("%d:%02d"):format(floor(timer / 60), mod(timer, 60))
+        end
+        if charges == nil then 
+            charges = 0    
+        end
+        local color = "|cFFFFFFFF"
+        if charges < 1 then
+            color = "|cFFFF0000"
+        elseif charges > 1 then
+            color = "|cFF00FF00"
+        end
+        return "|cFFAAAAAACR:|r " .. color .. charges .. "|r |cFFAAAAAA/|r " .. time  
+        
+    end
+    return "|cFFAAAAAACR:|r 2 |cFFAAAAAA/|r 2:05"
+end
+ ]]
+
 
 -- FRAMES
 do -- text alert frame
