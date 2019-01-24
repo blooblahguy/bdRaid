@@ -1,6 +1,0 @@
-## Interface: 60200
-## Title: |cffA02C2Fbd|rIdiot
-## DefaultState: Enabled
-## LoadOnDemand: 0
-
-core.lua
