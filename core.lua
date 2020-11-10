@@ -1,4 +1,4 @@
-local bdr, c, f = select(2, ...):unpack()
+local bdRaid, c, l = unpack(select(2, ...))
 
 bdr.controller = CreateFrame("frame",nil,UIParent)
 local cont = bdr.controller

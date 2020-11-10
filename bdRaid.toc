@@ -7,12 +7,26 @@
 
 lib\LibStub.lua
 lib\CallbackHandler-1.0.lua
+lib\AceComm-3.0.lua
+lib\ChatThrottleLib.lua
 lib\LibSharedMedia-3.0.lua
+lib\LibButtonGlow-1.0.lua
 
-init.lua
-functions.lua
-core.lua
+core\init.lua
+core\functions.lua
+core\core.lua
 
-modules/maiden.lua
-modules/kj.lua
-modules/atb.lua
+modules\range.lua
+modules\units.lua
+modules\marks.lua
+modules\raidframes.lua
+modules\audio.lua
+modules\roles.lua
+modules\nameplates.lua
+modules\auras.lua
+
+# bosses/maiden.lua
+# bosses/kj.lua
+# bosses/atb.lua
+
+core\finished.lua

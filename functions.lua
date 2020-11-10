@@ -1,6 +1,6 @@
-local bdr, c, f = select(2, ...):unpack()
+local bdRaidaid, c, l = unpack(select(2, ...))
 
-function bdr:sendAction(action, ...)
+function bdRaid:sendAction(action, ...)
 
 	local parameters = {...}
 	local paramString = ""
@@ -15,50 +15,50 @@ function bdr:sendAction(action, ...)
 
     print("got action", action, paramString)
 	
-	SendAddonMessage(bdr.prefix, action..paramString, "RAID", UnitName("player"));
+	SendAddonMessage(bdRaid.prefix, action..paramString, "RAID", UnitName("player"));
 end
 
 -- custom events/triggers
-bdr.events = {}
-function bdr:hookEvent(event, func)
+bdRaid.events = {}
+function bdRaid:hookEvent(event, func)
 	local events = split(event,",") or {event}
 	for i = 1, #events do
 		e = events[i]
-		if (not bdr.events[e]) then
-			bdr.events[e] = {}
+		if (not bdRaid.events[e]) then
+			bdRaid.events[e] = {}
 		end
-		bdr.events[e][#bdr.events[e]+1] = func
+		bdRaid.events[e][#bdRaid.events[e]+1] = func
 	end
 end
-function bdr:triggerEvent(event,...)
-	if (bdr.events[event]) then
-		for k, v in pairs(bdr.events[event]) do
+function bdRaid:triggerEvent(event,...)
+	if (bdRaid.events[event]) then
+		for k, v in pairs(bdRaid.events[event]) do
 			v(...)
 		end
 	end
 end
 
 -- triggering on Boss Messages
-bdr.bossMessage = CreateFrame("frame",nil)
-bdr.bossMessage:RegisterEvent("CHAT_MSG_MONSTER_YELL")
-bdr.bossMessage:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
-bdr.bossMessage:RegisterEvent("CHAT_MSG_MONSTER_WHISPER")
-bdr.bossMessage:RegisterEvent("CHAT_MSG_RAID")
-bdr.bossMessage:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE")
-bdr.bossMessage:RegisterEvent("CHAT_MSG_RAID_BOSS_WHISPER")
-bdr.bossMessage:SetScript("OnEvent", function(self, message, sender, language, channel, target)
-	bdr:triggerEvent("bdr_bossMessage", message, sender, target)
+bdRaid.bossMessage = CreateFrame("frame",nil)
+bdRaid.bossMessage:RegisterEvent("CHAT_MSG_MONSTER_YELL")
+bdRaid.bossMessage:RegisterEvent("CHAT_MSG_MONSTER_EMOTE")
+bdRaid.bossMessage:RegisterEvent("CHAT_MSG_MONSTER_WHISPER")
+bdRaid.bossMessage:RegisterEvent("CHAT_MSG_RAID")
+bdRaid.bossMessage:RegisterEvent("CHAT_MSG_RAID_BOSS_EMOTE")
+bdRaid.bossMessage:RegisterEvent("CHAT_MSG_RAID_BOSS_WHISPER")
+bdRaid.bossMessage:SetScript("OnEvent", function(self, message, sender, language, channel, target)
+	bdRaid:triggerEvent("bdRaid_bossMessage", message, sender, target)
 end)
 -- smart hook
-function bdr:onBossMessage(contains, func)
-	bdr:hookEvent("bdr_bossMessage", function(message, sender, target)
+function bdRaid:onBossMessage(contains, func)
+	bdRaid:hookEvent("bdRaid_bossMessage", function(message, sender, target)
 		if strfind(message, contains) then
 			func(message, sender, target)
 		end
 	end)
 end
 
-function bdr:addIconToFrame(parentFrame, spellID, duration)
+function bdRaid:addIconToFrame(parentFrame, spellID, duration)
 	local frame = parentFrame.additionalIcon or CreateFrame("frame",nil,parentFrame)
 	frame:SetFrameStrata("HIGH")
 	frame:SetWidth(aura_env.iconWidth)
@@ -83,28 +83,28 @@ function bdr:addIconToFrame(parentFrame, spellID, duration)
 	C_Timer.After(duration, function() frame:Hide() end)
 end
 
-bdr.soloableClasses = {}
-bdr.soloableAbilities = {}
-function bdr:resetVars()  
-    bdr.soloableClasses = {}   
+bdRaid.soloableClasses = {}
+bdRaid.soloableAbilities = {}
+function bdRaid:resetVars()  
+    bdRaid.soloableClasses = {}   
     soloableClasses["Paladin"] = true
     soloableClasses["Mage"] = true
     soloableClasses["Hunter"] = true
     soloableClasses["Rogue"] = true
 
-    bdr.soloableAbilities = {}
-    bdr.soloableAbilities["Aspect of the Turtle"] = true
-    bdr.soloableAbilities["Ice Block"] = true
-    bdr.soloableAbilities["Divine Shield"] = true
-    bdr.soloableAbilities["Cloak of Shadows"] = true
+    bdRaid.soloableAbilities = {}
+    bdRaid.soloableAbilities["Aspect of the Turtle"] = true
+    bdRaid.soloableAbilities["Ice Block"] = true
+    bdRaid.soloableAbilities["Divine Shield"] = true
+    bdRaid.soloableAbilities["Cloak of Shadows"] = true
 end
 
-function bdr:iCanSolo()
+function bdRaid:iCanSolo()
     -- we check for < 3 seconds because most mechanics have a longer duration
     local class = UnitClass("player")
 
     local hasCD = false
-    local cds = bdr.soloableAbilities
+    local cds = bdRaid.soloableAbilities
 
     for k, v in pairs(cds) do
         if (GetSpellCooldown(k)) and select(1, GetSpellCooldown(k)) < 3) then
@@ -115,7 +115,7 @@ function bdr:iCanSolo()
     return hasCD
 end
 
-function bdr:modifyRaidFrame(callback)
+function bdRaid:modifyRaidFrame(callback)
 	local hasVuhDo = IsAddOnLoaded("VuhDo")
 	local hasbdGrid = IsAddOnLoaded("bdGrid")
 	local hasGrid2 = IsAddOnLoaded("Grid2")
